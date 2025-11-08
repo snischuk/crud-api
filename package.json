@@ -15,10 +15,15 @@
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "start:dev": "ts-node-dev --respawn src/index.ts",
+    "start:dev": "nodemon --watch src --exec ts-node src/index.ts",
     "start:prod": "tsc && node dist/index.js",
-    "start:multi:dev": "ts-node-dev --respawn src/cluster.ts",
+    "start:multi:dev": "nodemon --watch src --exec ts-node src/cluster.ts",
     "start:multi:prod": "tsc && node dist/cluster.js",
     "test": "jest"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
