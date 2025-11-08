@@ -3,19 +3,16 @@ GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 NC='\033[0m'
 
-echo "${YELLOW}Running Prettier...${NC}"
-npm run format
+echo "${YELLOW}Running lint-staged...${NC}"
 
-echo "${YELLOW}Running ESLint...${NC}"
-npm run lint
+npx lint-staged
+status=$?
 
-if [ $? -ne 0 ]; then
+if [ $status -ne 0 ]; then
   echo ""
-  echo "${RED}🚫 Commit blocked due to ESLint errors. Fix them first!${NC}"
+  echo "${RED}🚫 Commit blocked due to Prettier/ESLint errors. Fix them first!${NC}"
   exit 1
 fi
-
-git add .
 
 echo ""
 echo "${GREEN}✅ Pre-commit checks passed. Commit allowed.${NC}"
