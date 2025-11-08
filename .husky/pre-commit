@@ -1,0 +1,21 @@
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+echo "${YELLOW}Running Prettier...${NC}"
+npm run format
+
+echo "${YELLOW}Running ESLint...${NC}"
+npm run lint
+
+if [ $? -ne 0 ]; then
+  echo ""
+  echo "${RED}🚫 Commit blocked due to ESLint errors. Fix them first!${NC}"
+  exit 1
+fi
+
+git add .
+
+echo ""
+echo "${GREEN}✅ Pre-commit checks passed. Commit allowed.${NC}"
