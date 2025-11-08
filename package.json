@@ -19,9 +19,13 @@
     "start:prod": "tsc && node dist/index.js",
     "start:multi:dev": "nodemon --watch src --exec ts-node src/cluster.ts",
     "start:multi:prod": "tsc && node dist/cluster.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --fix"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^9.39.1",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
