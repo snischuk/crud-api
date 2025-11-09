@@ -13,10 +13,9 @@
     "url": "git+https://github.com/snischuk/crud-api.git"
   },
   "main": "dist/index.js",
-  "type": "module",
   "scripts": {
-    "start:dev": "nodemon --watch src --exec ts-node src/index.ts",
-    "start:prod": "tsc && node dist/index.js",
+    "start:dev": "nodemon --watch src --ext ts,json --exec ts-node src/index.ts",
+    "start:prod": "npx tsc && node --experimental-specifier-resolution=node dist/index.js",
     "start:multi:dev": "nodemon --watch src --exec ts-node src/cluster.ts",
     "start:multi:prod": "tsc && node dist/cluster.js",
     "test": "jest",

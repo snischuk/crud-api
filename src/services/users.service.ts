@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto';
-import type { User } from '../models/user.model.ts';
-import type { TUserDTO } from '../types/user.type.ts';
+import type { User } from '../models/user.model';
+import type { TUserDTO } from '../types/user.type';
 import {
   getAllUsers as dbGetAllUsers,
   getUserById as dbGetUserById,
   createUser as dbCreateUser,
   updateUser as dbUpdateUser,
   deleteUser as dbDeleteUser,
-} from '../db/users.db.ts';
+} from '../db/users.db';
 
 export const getAllUsers = async (): Promise<User[]> => {
   return await dbGetAllUsers();

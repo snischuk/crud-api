@@ -1,4 +1,4 @@
-import type { User } from '../models/user.model.ts';
+import type { User } from '../models/user.model';
 
 const usersDatabase: User[] = [];
 

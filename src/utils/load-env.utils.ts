@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-import { isError } from './type-guards.utils.ts';
+import { isError } from './type-guards.utils';
 
 export const loadEnv = async (filePath = '.env'): Promise<void> => {
   try {

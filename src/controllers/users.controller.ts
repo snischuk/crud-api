@@ -1,13 +1,13 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
-import type { TUserDTO } from '../types/user.type.ts';
-import { isValidUUID } from '../utils/uuid.utils.ts';
+import type { TUserDTO } from '../types/user.type';
+import { isValidUUID } from '../utils/uuid.utils';
 import {
   getAllUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
-} from '../services/users.service.ts';
+} from '../services/users.service';
 
 const getRequestBody = (req: IncomingMessage): Promise<string> =>
   new Promise((resolve, reject) => {
