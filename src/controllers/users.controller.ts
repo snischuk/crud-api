@@ -1,55 +1,42 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
 import type { TUserDTO } from '../types/user.type';
+import type { User } from '../models/user.model';
 import { isValidUUID } from '../utils/uuid.utils';
-import {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-} from '../services/users.service';
+import { isError } from '../utils/type-guards.utils';
 
-const getRequestBody = (req: IncomingMessage): Promise<string> =>
-  new Promise((resolve, reject) => {
-    let body = '';
-    req.on('data', (chunk) => (body += chunk));
-    req.on('end', () => resolve(body));
-    req.on('error', (err) => reject(err));
-  });
+type RequestInput = {
+  url?: string;
+  method?: string;
+  body?: string;
+  database?: User[];
+};
 
-export const usersController = async (
-  req: IncomingMessage,
-  res: ServerResponse,
-) => {
-  const url = req.url || '';
-  const method = req.method || '';
+export const usersControllerIPC = async (req: RequestInput) => {
+  const db = req.database ?? [];
+  const url = req.url ?? '';
+  const method = req.method ?? '';
+  const body = req.body ?? '';
 
   try {
     if (url === '/api/users' && method === 'GET') {
-      const users = await getAllUsers();
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(users));
-      return;
+      return db;
     }
 
     if (url === '/api/users' && method === 'POST') {
-      const body = await getRequestBody(req);
       const parsedBody: TUserDTO = JSON.parse(body);
-
       if (
         !parsedBody.username ||
         parsedBody.age === undefined ||
         !parsedBody.hobbies
       ) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'All fields are required' }));
-        return;
+        return { error: 'All fields are required', status: 400 };
       }
 
-      const newUser = await createUser(parsedBody);
-      res.writeHead(201, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(newUser));
-      return;
+      const newUser: User = {
+        id: crypto.randomUUID(),
+        ...parsedBody,
+      };
+
+      return { user: newUser, action: 'create' };
     }
 
     const userIdMatch = url.match(/^\/api\/users\/([0-9a-f\-]+)$/i);
@@ -57,71 +44,38 @@ export const usersController = async (
       const userId = userIdMatch[1];
 
       if (!isValidUUID(userId)) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: 'Invalid UUID' }));
-        return;
+        return { error: 'Invalid UUID', status: 400 };
       }
 
+      const userIndex = db.findIndex((u) => u.id === userId);
+
       if (method === 'GET') {
-        const user = await getUserById(userId);
-        if (!user) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ message: 'User not found' }));
-          return;
-        }
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(user));
-        return;
+        if (userIndex === -1) return { error: 'User not found', status: 404 };
+        return db[userIndex];
       }
 
       if (method === 'PUT') {
-        const body = await getRequestBody(req);
         const parsedBody: TUserDTO = JSON.parse(body);
-
         if (
           !parsedBody.username ||
           parsedBody.age === undefined ||
           !parsedBody.hobbies
         ) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(
-            JSON.stringify({ message: 'All fields are required for PUT' }),
-          );
-          return;
+          return { error: 'All fields are required for PUT', status: 400 };
         }
 
-        const updatedUser = await updateUser(userId, parsedBody);
-        if (!updatedUser) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ message: 'User not found' }));
-          return;
-        }
-
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(updatedUser));
-        return;
+        const updatedUser: User = { id: userId, ...parsedBody };
+        return { user: updatedUser, action: 'update' };
       }
 
       if (method === 'DELETE') {
-        const deleted = await deleteUser(userId);
-        if (!deleted) {
-          res.writeHead(404, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ message: 'User not found' }));
-          return;
-        }
-
-        res.writeHead(204);
-        res.end();
-        return;
+        return { userId, action: 'delete' };
       }
     }
 
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Route not found' }));
+    return { error: 'Route not found', status: 404 };
   } catch (error: unknown) {
-    const message =
-      error instanceof Error ? error.message : 'Internal Server Error';
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message }));
+    const message = isError(error) ? error.message : 'Internal Server Error';
+    return { error: message, status: 500 };
   }
 };

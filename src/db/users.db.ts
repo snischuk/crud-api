@@ -1,6 +1,6 @@
 import type { User } from '../models/user.model';
 
-const usersDatabase: User[] = [];
+export const usersDatabase: User[] = [];
 
 export const getAllUsers = async (): Promise<User[]> => [...usersDatabase];
 

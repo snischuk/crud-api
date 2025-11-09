@@ -15,9 +15,9 @@
   "main": "dist/index.js",
   "scripts": {
     "start:dev": "nodemon --watch src --ext ts,json --exec ts-node src/index.ts",
-    "start:prod": "npx tsc && node --experimental-specifier-resolution=node dist/index.js",
-    "start:multi:dev": "nodemon --watch src --exec ts-node src/cluster.ts",
-    "start:multi:prod": "tsc && node dist/cluster.js",
+    "start:prod": "npx tsc && node dist/index.js",
+    "start:multi:dev": "nodemon --watch src --ext ts,json --exec ts-node src/cluster.ts",
+    "start:multi:prod": "npx tsc && node dist/cluster.js",
     "test": "jest",
     "lint": "eslint 'src/**/*.ts' --fix",
     "format": "prettier --write 'src/**/*.{ts,json,md}'",
