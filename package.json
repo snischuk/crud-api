@@ -1,0 +1,52 @@
+{
+  "name": "crud-api",
+  "version": "1.0.0",
+  "description": "CRUD API using an in-memory database.",
+  "author": "Max Snischuk",
+  "homepage": "https://github.com/snischuk/crud-api#readme",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/snischuk/crud-api/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snischuk/crud-api.git"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "start:dev": "nodemon --watch src --ext ts,json --exec ts-node src/index.ts",
+    "start:prod": "npx tsc && node dist/index.js",
+    "start:multi:dev": "nodemon --watch src --ext ts,json --exec ts-node src/cluster.ts",
+    "start:multi:prod": "npx tsc && node dist/cluster.js",
+    "test": "jest",
+    "lint": "eslint 'src/**/*.ts' --fix",
+    "format": "prettier --write 'src/**/*.{ts,json,md}'",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint --fix"
+    ],
+    "src/**/*.{ts,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "husky": "^9.1.7",
+    "jest": "^30.2.0",
+    "lint-staged": "^16.2.6",
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
